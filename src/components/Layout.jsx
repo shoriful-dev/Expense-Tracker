@@ -1,9 +1,13 @@
 import React from 'react';
+import { styles } from '../assets/dummyStyles';
+import Navber from './Navber';
 
-const Layout = () => {
+const Layout = ({ onLogout, user }) => {
   return (
-    <div>Layout</div>
-  )
-}
+    <div className={styles.layout.root}>
+      <Navber user={user} onLogout={onLogout}/>
+    </div>
+  );
+};
 
 export default Layout;
