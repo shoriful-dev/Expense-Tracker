@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { sidebarStyles, cn, signupStyles } from '../assets/dummyStyles';
+import { sidebarStyles, cn } from '../assets/dummyStyles';
 import { motion } from 'framer-motion';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { ArrowDown, ArrowUp, Home, User } from 'lucide-react';
+import { ArrowDown, ArrowUp, HelpCircle, Home, LogOut, Menu, User, X } from 'lucide-react';
 
 const MENU_ITEMS = [
   { text: 'Dashboard', path: '/', icon: <Home size={20} /> },
@@ -137,21 +137,27 @@ const Sidebar = ({ user, isCollapsed, setIsCollapsed }) => {
             </motion.div>
           </button>
 
-          <div className={cn(
-            sidebarStyles.userProfileContainer.base,
-            isCollapsed ? sidebarStyles.userProfileContainer.collapsed : sidebarStyles.userProfileContainer.expanded
-          )}>
+          <div
+            className={cn(
+              sidebarStyles.userProfileContainer.base,
+              isCollapsed
+                ? sidebarStyles.userProfileContainer.collapsed
+                : sidebarStyles.userProfileContainer.expanded,
+            )}
+          >
             <div className="flex items-center">
               <div className={sidebarStyles.userInitials.base}>{initial}</div>
               {!isCollapsed && (
-                <motion.div 
+                <motion.div
                   className="ml-3 overflow-hidden"
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -10 }}
                 >
-                  <h2 className='text-sm font-bold text-gray-800 truncate'>{username}</h2>
-                  <p className='text-xs text-gray-500 truncate'>{email}</p>
+                  <h2 className="text-sm font-bold text-gray-800 truncate">
+                    {username}
+                  </h2>
+                  <p className="text-xs text-gray-500 truncate">{email}</p>
                 </motion.div>
               )}
             </div>
@@ -163,9 +169,44 @@ const Sidebar = ({ user, isCollapsed, setIsCollapsed }) => {
             </ul>
           </div>
 
-          
+          <div
+            className={cn(
+              sidebarStyles.footerContainer.base,
+              isCollapsed
+                ? sidebarStyles.footerContainer.collapsed
+                : sidebarStyles.footerContainer.expanded,
+            )}
+          >
+            <Link
+              to={'https://www.shoriful.me/#contact'}
+              className={cn(
+                sidebarStyles.footerLink.base,
+                isCollapsed
+                  ? sidebarStyles.footerLink.collapsed
+                  : sidebarStyles.footerLink.expanded,
+              )}
+            >
+              <HelpCircle size={20} className="text-gray-500" />
+              {!isCollapsed && <span>Support</span>}
+            </Link>
+
+            <button
+              onClick={handleLogout}
+              className={cn(
+                sidebarStyles.logoutButton.base,
+                isCollapsed && sidebarStyles.logoutButton.collapsed,
+              )}
+            >
+              <LogOut size={20} className="text-gray-500" />
+              {!isCollapsed && <span>Logout</span>}
+            </button>
+          </div>
         </div>
       </motion.div>
+
+      <motion.button onClick={() => setMobileOpen((prev) => !prev)} className={sidebarStyles.mobileMenuButton} whileHover={{scale: 1.05}} whileTap={{scale: 0.95}}>
+        {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+      </motion.button>
     </>
   );
 };
