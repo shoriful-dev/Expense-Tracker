@@ -400,7 +400,7 @@ const Layout = ({ onLogout, user }) => {
                 <h3 className={styles.cards.title}>
                   <TrendingUp className="w-6 h-6 text-teal-500" />
                   Financial Overview
-                  <span className='text-sm text-gray-500 font-normal'>
+                  <span className="text-sm text-gray-500 font-normal">
                     ({timeFrameLabel})
                   </span>
                 </h3>
@@ -417,8 +417,14 @@ const Layout = ({ onLogout, user }) => {
                   <Clock className="w-6 h-6 text-purple-500" />
                   Recent Transactions
                 </h3>
-                <button onClick={fetchTransactions} disabled={loading} className={styles.transactions.refreshButton}>
-                  <RefreshCw className={styles.transactions.refreshIcon(loading)} />
+                <button
+                  onClick={fetchTransactions}
+                  disabled={loading}
+                  className={styles.transactions.refreshButton}
+                >
+                  <RefreshCw
+                    className={styles.transactions.refreshIcon(loading)}
+                  />
                 </button>
               </div>
 
@@ -428,15 +434,23 @@ const Layout = ({ onLogout, user }) => {
               </div>
 
               <div className={styles.transactions.listContainer}>
-                {displayedTransactions.map((transaction) => {
-                  const {id, type, category, description, date, amount} = transaction;
+                {displayedTransactions.map(transaction => {
+                  const { id, type, category, description, date, amount } =
+                    transaction;
                   return (
-                    <div key={id} className={styles.transactions.transactionItem}>
+                    <div
+                      key={id}
+                      className={styles.transactions.transactionItem}
+                    >
                       <div className="flex items-center gap-1 md:gap-4 lg:gap-3">
-                        <div className={`p-2 rounded-lg ${styles.colors.transaction.bg(
-                          type,
-                        )}`}>
-                          {CATEGORY_ICONS[category] || <DollarSign className={styles.transactions.icon} />}
+                        <div
+                          className={`p-2 rounded-lg ${styles.colors.transaction.bg(
+                            type,
+                          )}`}
+                        >
+                          {CATEGORY_ICONS[category] || (
+                            <DollarSign className={styles.transactions.icon} />
+                          )}
                         </div>
 
                         <div className={styles.transactions.details}>
@@ -445,7 +459,7 @@ const Layout = ({ onLogout, user }) => {
                           </p>
                           <p className={styles.transactions.meta}>
                             {new Date(date).toLocaleDateString()}
-                            <span className='ml-2 capitalize'>{category}</span>
+                            <span className="ml-2 capitalize">{category}</span>
                           </p>
                         </div>
                       </div>
@@ -454,7 +468,7 @@ const Layout = ({ onLogout, user }) => {
                         {type === 'income' ? '+' : '-'}${Number(amount)}
                       </span>
                     </div>
-                  )
+                  );
                 })}
 
                 {transactions.length === 0 ? (
@@ -463,21 +477,26 @@ const Layout = ({ onLogout, user }) => {
                       <Clock className={styles.transactions.emptyIcon} />
                     </div>
                     <p className={styles.transactions.emptyText}>
-                      No recent transactions 
+                      No recent transactions
                     </p>
                   </div>
                 ) : (
                   <div className={styles.transactions.viewAllContainer}>
-                    <button onClick={() => setShowAllTransactions(!showAllTransactions)} className={styles.transactions.viewAllButton}>
+                    <button
+                      onClick={() =>
+                        setShowAllTransactions(!showAllTransactions)
+                      }
+                      className={styles.transactions.viewAllButton}
+                    >
                       {showAllTransactions ? (
                         <>
-                        <ChevronUp className='w-5 h-5' />
-                        Show Less
+                          <ChevronUp className="w-5 h-5" />
+                          Show Less
                         </>
                       ) : (
                         <>
-                        <ChevronDown className='w-5 h-5' />
-                        View All Transactions ({transactions.length})
+                          <ChevronDown className="w-5 h-5" />
+                          View All Transactions ({transactions.length})
                         </>
                       )}
                     </button>
@@ -495,11 +514,16 @@ const Layout = ({ onLogout, user }) => {
 
               <div className={styles.categories.list}>
                 {topCategories.map((category, amount) => (
-                  <div key={category} className={styles.categories.categoryIcon}>
+                  <div
+                    key={category}
+                    className={styles.categories.categoryIcon}
+                  >
                     <div className="flex items-center gap-3">
                       <div className={styles.categories.categoryIconContainer}>
                         {CATEGORY_ICONS[category] || (
-                          <DollarSign className={styles.categories.categoryIcon} />
+                          <DollarSign
+                            className={styles.categories.categoryIcon}
+                          />
                         )}
                       </div>
                       <span className={styles.categories.categoryName}>
@@ -511,6 +535,28 @@ const Layout = ({ onLogout, user }) => {
                     </span>
                   </div>
                 ))}
+              </div>
+
+              <div className={styles.categories.summaryContainer}>
+                <div className={styles.categories.summaryGrid}>
+                  <div className={styles.categories.summaryIncomeCard}>
+                    <p className={styles.categories.summaryTitle}>
+                      Total Income
+                    </p>
+                    <p className={styles.categories.summaryValue}>
+                      ${stats.allTimeIncome.toLocaleString()}
+                    </p>
+                  </div>
+
+                  <div className={styles.categories.summaryExpenseCard}>
+                    <p className={styles.categories.summaryTitle}>
+                      Total Expense
+                    </p>
+                    <p className={styles.categories.summaryValue}>
+                      ${stats.allTimeExpenses.toLocaleString()}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
