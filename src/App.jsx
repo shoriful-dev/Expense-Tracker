@@ -1,13 +1,44 @@
-import React, { useState } from 'react';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
 import Login from './components/Login';
 import Signup from './components/SignUp';
 
+const API_URL = 'http://localhost:8000';
+
+// to get transactions from localstorage
+const getTransactionsFromStorage = () => {
+  const saved = localStorage.getItem('transactions');
+  return saved ? JSON.parse(saved) : [];
+};
+
+// to protect the routes
+const ProtectedRoute = ({ user, children }) => {
+  const localToken = localStorage.getItem('token');
+  const sessionToken = sessionStorage.getItem('token');
+  const hasToken = localToken || sessionToken;
+
+  if(!user && !hasToken) {
+    return <Navigate to="/login" replace/>;
+  }
+  return children;
+}
+
+// to scroll to top when the page is reloaded
+const scrollToTop = () => {
+  const location = useLocation();
+  useEffect(() => {
+    window.scrollTo({top: 0, left: 0, behavior: 'auto'});
+  }, [location.pathname]);
+  return null;
+}
+
 const App = () => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
+  const [transaction, setTransaction] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const naviage = useNavigate();
 
   // to save the token
@@ -30,7 +61,7 @@ const App = () => {
       console.error('persistAuth error:', err);
     }
   };
-
+  
   const clearAuth = () => {
     try {
       localStorage.removeItem('user');
@@ -43,6 +74,9 @@ const App = () => {
     setUser(null);
     setToken(null);
   };
+
+  // to update the user data both in state & storage
+  
 
   const handleLogout = () => {
     clearAuth();
