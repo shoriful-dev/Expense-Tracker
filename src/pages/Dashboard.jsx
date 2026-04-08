@@ -18,7 +18,17 @@ import {
   getTimeFrameRange,
 } from './../components/Helpers';
 import axios from 'axios';
-import { Plus } from 'lucide-react';
+import {
+  ArrowDown,
+  BarChart2,
+  PiggyBank,
+  Plus,
+  TrendingDown,
+  TrendingUp,
+  Wallet,
+} from 'lucide-react';
+import FinancialCard from './../components/FinancialCard';
+import GaugeCard from '../components/GaugeCard';
 
 const API_BASE = 'http://localhost:8000/api';
 
@@ -44,6 +54,7 @@ function toIsoWithClientTime(dateValue) {
   try {
     return new Date(dateValue).toISOString();
   } catch (err) {
+    console.error(err);
     return new Date().toISOString();
   }
 }
@@ -380,9 +391,14 @@ const Dashboard = () => {
         <div className={dashboardStyles.headerContent}>
           <div>
             <h1 className={dashboardStyles.headerTitle}>Finance Dashboard</h1>
-            <p className={dashboardStyles.headerSubtitle}>Track your income and expenses</p>
+            <p className={dashboardStyles.headerSubtitle}>
+              Track your income and expenses
+            </p>
           </div>
-          <button className={dashboardStyles.addButton} onClick={() => setShowModal(true)}>
+          <button
+            className={dashboardStyles.addButton}
+            onClick={() => setShowModal(true)}
+          >
             <Plus size={20} />
             Add Transaction
           </button>
@@ -391,12 +407,104 @@ const Dashboard = () => {
         <div className={dashboardStyles.timeFrameContainer}>
           <div className={dashboardStyles.timeFrameWrapper}>
             {['daily', 'weekly', 'monthly'].map(frame => (
-              <button key={frame} onClick={() => setTimeFrame(frame)} className={dashboardStyles.timeFrameButton(timeFrame === frame)}>
+              <button
+                key={frame}
+                onClick={() => setTimeFrame(frame)}
+                className={dashboardStyles.timeFrameButton(timeFrame === frame)}
+              >
                 {frame.charAt(0).toUpperCase() + frame.slice(1)}
               </button>
             ))}
           </div>
         </div>
+      </div>
+
+      <div className={dashboardStyles.summaryGrid}>
+        <FinancialCard
+          icon={
+            <div className={dashboardStyles.walletIconContainer}>
+              <Wallet className="w-5 h-5 text-teal-600" />
+            </div>
+          }
+          label={'Total Balance'}
+          value={`$${Math.round(displayIncome - displayExpenses).toLocaleString()}`}
+          additionalContent={
+            <div className="flex items-center gap-2 mt-2 text-sm">
+              <span className={dashboardStyles.balanceBadge}>
+                +${Math.round(displayIncome).toLocaleString()}
+              </span>
+              <span className={dashboardStyles.expenseBadge}>
+                -${Math.round(displayExpenses).toLocaleString()}
+              </span>
+            </div>
+          }
+        />
+
+        <FinancialCard
+          icon={
+            <div className={dashboardStyles.arrowDownIconContainer}>
+              <ArrowDown className="w-5 h-5 text-orange-600" />
+            </div>
+          }
+          label={`${timeFrameRange.label} Expenses`}
+          value={`$${Math.round(displayExpenses).toLocaleString()}`}
+          additionalContent={
+            <div
+              className={`flex items-center gap-1 mt-2 text-xs ${expenseChange >= 0 ? trendStyles.positive : trendStyles.negative}`}
+            >
+              {expenseChange >= 0 ? (
+                <TrendingUp className="w-4 h-4" />
+              ) : (
+                <TrendingDown className="w-4 h-4" />
+              )}
+              {Math.abs(expenseChange)}%{' '}
+              {expenseChange >= 0 ? 'Increase' : 'Decrease'} from{' '}
+              {prevTimeFrameRange.label}
+            </div>
+          }
+        />
+
+        <FinancialCard
+          icon={
+            <div className={dashboardStyles.piggyBankIconContainer}>
+              <PiggyBank className="w-5 h-5 text-cyan-600" />
+            </div>
+          }
+          label={`${timeFrameRange.label} Savings`}
+          value={`$${Math.round(displaySavings).toLocaleString()}`}
+          additionalContent={
+            <div className="mt-2 text-xs text-cyan-600 flex items-center gap-2">
+              <div className="flex items-center gap-1">
+                <BarChart2 className="w-4 h-4" />
+                <span>
+                  {displayIncome > 0
+                    ? Math.round((displaySavings / displayIncome) * 100)
+                    : 0}
+                  % of Income
+                </span>
+              </div>
+
+              {typeof overviewMeta.savingsRate === 'number' && (
+                <span
+                  className={`px-2 py-1 rounded-full text-xs font-medium ${
+                    overviewMeta.savingsRate < 0
+                      ? trendStyles.negativeRate
+                      : trendStyles.positiveRate
+                  }`}
+                >
+                  {overviewMeta.savingsRate}%
+                </span>
+              )}
+            </div>
+          }
+        />
+      </div>
+
+      {/* Gauge Cards */}
+      <div className={dashboardStyles.gaugeGrid}>
+        {gaugeData.map((gauge, index) => (
+          <GaugeCard key={index} gauge={gauge} colorInfo={GAUGE_COLORS[gauge.name]} timeFrameLabel={timeFrameRange.label}/>
+        ))}
       </div>
     </div>
   );
