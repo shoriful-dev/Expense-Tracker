@@ -33,6 +33,7 @@ import { incomeStyles as styles } from '../assets/dummyStyles';
 import { formatBDT } from '../utils/currency';
 import { toast } from 'react-toastify';
 import { usePreferences } from '../context/PreferencesContext.jsx';
+import { formatDate } from '../utils/date.js';
 
 const API_BASE = 'http://localhost:8000/api';
 
@@ -224,8 +225,8 @@ const Income = () => {
     [timeFrame],
   );
   const chartPoints = useMemo(
-    () => generateChartPoints(timeFrame, timeFrameRange),
-    [timeFrame, timeFrameRange],
+    () => generateChartPoints(timeFrame, { digits: prefs.digits }),
+    [timeFrame, prefs.digits],
   );
 
   const isDateInRange = useCallback((date, start, end) => {
@@ -510,8 +511,8 @@ const Income = () => {
     } catch (err) {
       console.error('Export error:', err);
       try {
-        const exportData = filteredTransactions.map(t => ({
-          Date: new Date(t.date).toLocaleDateString(),
+          const exportData = filteredTransactions.map(t => ({
+            Date: formatDate(t.date, { digits: prefs.digits }),
           Description: t.description,
           Category: t.category,
           Amount: t.amount,

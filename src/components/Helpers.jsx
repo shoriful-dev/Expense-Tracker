@@ -126,9 +126,10 @@ export const calculateData = transactions => {
   return { ...totals, savings: totals.income - totals.expenses };
 };
 
-export const generateChartPoints = timeFrame => {
+export const generateChartPoints = (timeFrame, { digits = 'bn' } = {}) => {
   const now = new Date();
   const points = [];
+  const locale = digits === 'bn' ? 'en-US-u-nu-beng' : 'en-US';
 
   if (timeFrame === 'daily') {
     // Generate 24 hours for daily view
@@ -137,7 +138,7 @@ export const generateChartPoints = timeFrame => {
       hour.setHours(i, 0, 0, 0);
       points.push({
         date: hour,
-        label: hour.toLocaleTimeString([], { hour: '2-digit' }),
+        label: hour.toLocaleTimeString(locale, { hour: '2-digit' }),
         hour: i,
         isCurrent: i === now.getHours(),
       });
@@ -153,7 +154,7 @@ export const generateChartPoints = timeFrame => {
       day.setDate(start.getDate() + i);
       points.push({
         date: day,
-        label: day.toLocaleDateString('en-US', { weekday: 'short' }),
+        label: day.toLocaleDateString(locale, { weekday: 'short' }),
         isCurrent:
           day.getDate() === now.getDate() && day.getMonth() === now.getMonth(),
       });
@@ -170,7 +171,7 @@ export const generateChartPoints = timeFrame => {
       const day = new Date(now.getFullYear(), now.getMonth(), i);
       points.push({
         date: day,
-        label: day.toLocaleDateString('en-US', { day: 'numeric' }),
+        label: day.toLocaleDateString(locale, { day: 'numeric' }),
         isCurrent: i === now.getDate(),
       });
     }
@@ -179,7 +180,7 @@ export const generateChartPoints = timeFrame => {
       const month = new Date(now.getFullYear(), i, 1);
       points.push({
         date: month,
-        label: month.toLocaleDateString('en-US', { month: 'short' }),
+        label: month.toLocaleDateString(locale, { month: 'short' }),
         isCurrent: i === now.getMonth(),
       });
     }
@@ -196,7 +197,7 @@ export const generateChartPoints = timeFrame => {
       const day = new Date(now.getFullYear(), now.getMonth(), i);
       points.push({
         date: day,
-        label: day.toLocaleDateString('en-US', { day: 'numeric' }),
+        label: day.toLocaleDateString(locale, { day: 'numeric' }),
         isCurrent: i === now.getDate(),
       });
     }

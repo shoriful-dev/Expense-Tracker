@@ -1,0 +1,17 @@
+{
+  "name": "Expense Tracker",
+  "short_name": "ExpenseTracker",
+  "description": "Track income and expenses, visualize spending, and manage your budget.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0ea5a4",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
+

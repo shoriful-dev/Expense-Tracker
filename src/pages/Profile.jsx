@@ -1,10 +1,10 @@
-import React, { memo, use, useCallback, useEffect, useState } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import { profileStyles } from '../assets/dummyStyles';
 import Modal from 'react-modal';
 import { Eye, EyeOff, Lock, User, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 const BASE_URL = 'http://localhost:8000/api';
 
@@ -218,23 +218,11 @@ const Profile = ({ onUpdateProfile, onLogout }) => {
   // to logout
   const handleLogout = useCallback(() => {
     onLogout?.();
-    navigate('/signup');
+    navigate('/login');
   }, [onLogout, navigate]);
 
   return (
     <div className={profileStyles.container}>
-      <ToastContainer
-        position="top-right"
-        autoClose={2000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
-
       <div className={profileStyles.mainContainer}>
         <div className={profileStyles.header}>
           <div className={profileStyles.avatar}>
@@ -315,12 +303,12 @@ const Profile = ({ onUpdateProfile, onLogout }) => {
                 <div className="space-y-4">
                   <div>
                     <p className={profileStyles.label}>Full Name</p>
-                    <p className="font-medium text-gray-800">{user.name}</p>
+                    <p className="font-semibold text-gray-900">{user.name}</p>
                   </div>
 
                   <div>
                     <p className={profileStyles.label}>Email Address</p>
-                    <p className="font-medium text-gray-800">{user.email}</p>
+                    <p className="font-semibold text-gray-900">{user.email}</p>
                   </div>
                 </div>
               )}

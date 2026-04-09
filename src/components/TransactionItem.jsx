@@ -4,6 +4,7 @@ import { colorClasses } from '../assets/color';
 import { DollarSign, Edit, Save, Trash2, X } from 'lucide-react';
 import { formatBDT } from '../utils/currency';
 import { usePreferences } from '../context/PreferencesContext.jsx';
+import { formatDate } from '../utils/date.js';
 
 const TransactionItem = ({
   transaction,
@@ -128,9 +129,9 @@ const TransactionItem = ({
           ) : (
             <p
               className={transactionItemStyles.details}
-              title={`${new Date(transaction.date).toLocaleDateString()} • ${transaction.category}`}
+              title={`${formatDate(transaction.date, { digits: prefs.digits })} • ${transaction.category}`}
             >
-              {new Date(transaction.date).toLocaleDateString()} •{' '}
+              {formatDate(transaction.date, { digits: prefs.digits })} •{' '}
               {transaction.category}
             </p>
           )}

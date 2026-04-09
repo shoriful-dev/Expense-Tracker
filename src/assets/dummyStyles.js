@@ -269,38 +269,50 @@ export const expensePageStyles = {
 
 export const profileStyles = {
   // Container styles
-  container: "max-w-4xl mx-auto py-8 px-4",
-  mainContainer: "bg-white -mx-7 rounded-2xl shadow-sm overflow-hidden",
+  container: "max-w-5xl mx-auto py-10 px-4",
+  mainContainer:
+    "bg-white/90 backdrop-blur-xl -mx-7 rounded-[28px] shadow-[0_24px_80px_rgba(15,23,42,0.10)] overflow-hidden border border-gray-100",
   
   // Header styles
-  header: "bg-gradient-to-r from-teal-500 to-emerald-600 p-8 text-center",
-  avatar: "w-24 h-24 mx-auto rounded-full bg-white/20 flex items-center justify-center mb-4",
-  userName: "text-2xl font-bold text-white",
-  userEmail: "text-teal-100 mt-2",
+  header:
+    "relative bg-gradient-to-r from-teal-600 via-cyan-600 to-emerald-600 p-10 text-center",
+  avatar:
+    "relative w-24 h-24 mx-auto rounded-3xl bg-white/15 backdrop-blur flex items-center justify-center mb-4 shadow-lg ring-4 ring-white/25",
+  userName: "text-3xl font-extrabold text-white tracking-tight",
+  userEmail: "text-white/80 mt-2 font-medium",
   
   // Content styles
-  content: "p-8 -mx-6.5",
-  grid: "grid grid-cols-1 md:grid-cols-2 gap-8",
+  content: "p-8 md:p-10 -mx-6.5",
+  grid: "grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8",
   
   // Card styles
-  card: "bg-gray-50 rounded-xl p-6",
-  cardTitle: "text-xl font-semibold pb-3 text-gray-800 flex items-center",
-  icon: "w-5 h-5 mr-2 text-teal-600",
+  card:
+    "bg-white rounded-2xl p-6 md:p-7 border border-gray-100 shadow-[0_8px_30px_rgba(15,23,42,0.06)]",
+  cardTitle:
+    "text-lg md:text-xl font-bold pb-4 text-gray-900 flex items-center gap-2",
+  icon: "w-5 h-5 text-teal-600",
   
   // Form styles
-  label: "text-sm text-gray-500  block mb-1",
-  input: "w-full px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-300 focus:border-teal-500",
-  inputWithError: "w-full px-4 py-2 bg-gray-50 border rounded-lg focus:ring-2 focus:ring-teal-300 focus:border-teal-500",
+  label: "text-xs font-semibold uppercase tracking-wide text-gray-500 block mb-2",
+  input:
+    "w-full px-4 py-3 bg-gray-50/60 border border-gray-200 rounded-xl focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 outline-none transition",
+  inputWithError:
+    "w-full px-4 py-3 bg-gray-50/60 border border-gray-200 rounded-xl focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 outline-none transition",
   
   // Button styles
-  buttonPrimary: "flex-1 bg-gradient-to-r from-teal-500 to-emerald-600 text-white py-2.5 rounded-xl font-medium shadow-md",
-  buttonSecondary: "flex-1 py-2.5 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-100",
-  editButton: "text-teal-600 hover:text-teal-700 font-medium text-sm",
-  changeButton: "text-teal-600 hover:text-teal-700 font-medium lg:text-sm",
+  buttonPrimary:
+    "flex-1 bg-gradient-to-r from-teal-600 to-emerald-600 text-white py-3 rounded-xl font-semibold shadow-[0_10px_30px_rgba(16,185,129,0.25)] hover:shadow-[0_14px_40px_rgba(16,185,129,0.30)] active:scale-[0.99] transition",
+  buttonSecondary:
+    "flex-1 py-3 border border-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 active:scale-[0.99] transition",
+  editButton:
+    "text-teal-700 hover:text-teal-800 font-semibold text-sm px-3 py-1.5 rounded-lg hover:bg-teal-50 transition",
+  changeButton:
+    "text-teal-700 hover:text-teal-800 font-semibold text-sm px-3 py-1.5 rounded-lg hover:bg-teal-50 transition",
   
   // Security item
-  securityItem: "flex items-center justify-between p-4 bg-white rounded-xl border border-gray-200",
-  securityText: "font-medium lg:text-sm text-gray-400",
+  securityItem:
+    "flex items-center justify-between p-4 bg-gray-50/60 rounded-2xl border border-gray-200",
+  securityText: "font-semibold text-sm text-gray-700",
   
   // Modal styles
   modalContent: "bg-white rounded-2xl p-6 lg:px-28 w-full max-w-md",
@@ -408,44 +420,6 @@ export const loginStyles = {
   // Spinner for loading state
   spinner: "animate-spin -ml-1 mr-3 h-5 w-5 text-white"
 };
-
-// Styles for Navbar component
-export const navbarStyles = {
-  // Layout and container styles
-  header: "sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 shadow-sm",
-  container: "flex items-center justify-between px-4 py-3 md:px-8 max-w-7xl mx-auto",
-  
-  // Logo styles
-  logoContainer: "flex items-center gap-0 cursor-pointer",
-  logoImage: "w-15 h-15 rounded-xl overflow-hidden",
-  
-  // Text styles
-  logoText: "lg:text-3xl md:text-3xl text-2xl text-gray-900 font-[550] lobster-regular",
-  
-  // User profile styles
-  userContainer: "relative",
-  userButton: "flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors",
-  userAvatar: "w-9 h-9 flex items-center justify-center rounded-full bg-gradient-to-br from-teal-600 to-cyan-500 text-white font-bold text-lg",
-  statusIndicator: "absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white",
-  userTextContainer: "text-left hidden md:block",
-  userName: "text-sm font-medium text-gray-800 truncate max-w-[120px]",
-  userEmail: "text-xs text-gray-500 truncate max-w-[120px]",
-  chevronIcon: (isOpen) => `w-4 h-4 text-gray-500 transition-transform ${isOpen ? "rotate-180" : ""}`,
-  
-  // Dropdown menu styles
-  dropdownMenu: "absolute top-14 right-0 w-56 bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-100 dark:border-gray-800 z-50",
-  dropdownHeader: "px-4 py-3 border-b border-gray-100",
-  dropdownAvatar: "w-10 h-10 rounded-full bg-gradient-to-br from-teal-600 to-cyan-500 flex items-center justify-center text-white font-bold text-lg",
-  dropdownName: "text-sm text-gray-800 dark:text-gray-100 ",
-  dropdownEmail: "text-xs text-gray-500 dark:text-gray-400",
-  
-  // Menu items
-  menuItemContainer: "p-1.5",
-  menuItem: "w-full px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-800 text-sm text-gray-700 dark:text-gray-200 flex items-center gap-3 rounded-lg",
-  menuItemBorder: "p-1.5 border-t border-gray-100",
-  logoutButton: "flex w-full items-center gap-3 px-4 py-3 text-sm hover:bg-red-50 text-red-600 rounded-lg"
-};
-
 
 // In src/assets/dummyStyles.js - add these styles
 export const signupStyles = {
@@ -721,4 +695,48 @@ export const styles = {
     },
     expenseChange: (change) => change > 0 ? 'text-orange-600' : 'text-green-600',
   },
+};
+
+// Styles for Navbar component
+export const navbarStyles = {
+  header:
+    "sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100 shadow-[0_1px_0_rgba(0,0,0,0.04)]",
+  container:
+    "flex items-center justify-between px-4 py-3 md:px-8 max-w-7xl mx-auto",
+
+  logoContainer: "flex items-center gap-0 cursor-pointer",
+  logoImage: "w-15 h-15 rounded-xl overflow-hidden",
+  logoText:
+    "lg:text-3xl md:text-3xl text-2xl text-gray-900 font-[550] lobster-regular",
+
+  userContainer: "relative",
+  userButton:
+    "group flex items-center gap-3 px-3.5 py-2 rounded-2xl bg-white/80 backdrop-blur-xl border border-gray-200/70 shadow-[0_10px_30px_rgba(15,23,42,0.08)] hover:shadow-[0_14px_40px_rgba(15,23,42,0.10)] hover:border-gray-200 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/30",
+  userAvatar:
+    "w-9 h-9 flex items-center justify-center rounded-2xl bg-gradient-to-br from-teal-600 to-cyan-500 text-white font-extrabold text-lg ring-2 ring-white shadow-sm",
+  statusIndicator:
+    "absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white",
+  userTextContainer: "text-left hidden md:block",
+  userName: "text-sm font-semibold text-gray-900 truncate max-w-[150px] leading-tight",
+  userEmail: "text-[11px] text-gray-500 truncate max-w-[170px] leading-tight",
+  chevronIcon: isOpen =>
+    `w-4 h-4 text-gray-400 transition-transform duration-200 group-hover:text-gray-600 ${isOpen ? 'rotate-180 text-gray-600' : ''}`,
+
+  dropdownMenu:
+    "absolute top-[3.25rem] right-0 w-[320px] bg-white/92 backdrop-blur-xl rounded-2xl shadow-[0_28px_80px_rgba(15,23,42,0.14)] border border-gray-200/70 z-50 overflow-hidden",
+  dropdownHeader:
+    "px-4 py-4 border-b border-gray-200/70 bg-gradient-to-r from-teal-50/90 to-cyan-50/70",
+  dropdownAvatar:
+    "w-11 h-11 rounded-2xl bg-gradient-to-br from-teal-600 to-cyan-500 flex items-center justify-center text-white font-extrabold text-lg shadow-sm ring-2 ring-white/70",
+  dropdownName: "text-sm font-semibold text-gray-900 leading-tight",
+  dropdownEmail: "text-xs text-gray-600 mt-0.5 truncate max-w-[200px]",
+
+  menuItemContainer: "px-2 py-1.5",
+  menuItem:
+    "w-full px-3 py-2.5 text-left hover:bg-gray-50/90 active:bg-gray-100/80 text-sm text-gray-800 flex items-center justify-between gap-3 rounded-xl transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/20",
+  menuItemLeft: "flex items-center gap-3 min-w-0",
+  menuItemRight: "text-xs font-semibold text-gray-500",
+  menuItemBorder: "px-2 py-2 border-t border-gray-200/70 bg-white/70",
+  logoutButton:
+    "flex w-full items-center gap-3 px-3 py-2.5 text-sm hover:bg-red-50/80 active:bg-red-100/60 text-red-600 rounded-xl transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500/20",
 };

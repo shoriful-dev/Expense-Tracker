@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { sidebarStyles, cn, signupStyles } from '../assets/dummyStyles';
-import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import { sidebarStyles, cn } from '../assets/dummyStyles';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   ArrowDown,
@@ -17,7 +16,8 @@ const MENU_ITEMS = [
   { text: 'Dashboard', path: '/', icon: <Home size={20} /> },
   { text: 'Income', path: '/income', icon: <ArrowUp size={20} /> },
   { text: 'Expenses', path: '/expense', icon: <ArrowDown size={20} /> },
-  { text: 'Profile', path: '/profile', icon: <User size={20} /> },
+  // Keep Profile linking to Home, but don't share the same active match as Dashboard.
+  { text: 'Profile', path: '/profile', to: '/', icon: <User size={20} /> },
 ];
 
 const Sidebar = ({ user, isCollapsed, setIsCollapsed }) => {
@@ -65,13 +65,9 @@ const Sidebar = ({ user, isCollapsed, setIsCollapsed }) => {
   const renderMenuItem = ({ text, path, icon }) => {
     const isActive = pathname === path;
     return (
-      <motion.li
-        key={text}
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-      >
+      <li key={text}>
         <Link
-          to={path}
+          to={MENU_ITEMS.find(i => i.text === text)?.to || path}
           className={cn(
             sidebarStyles.menuItem.base,
             isActive
@@ -94,40 +90,28 @@ const Sidebar = ({ user, isCollapsed, setIsCollapsed }) => {
             {icon}
           </span>
           {!isCollapsed && (
-            <motion.span
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -10 }}
-            >
-              {text}
-            </motion.span>
+            <span>{text}</span>
           )}
           {activeHover === text && !isActive && !isCollapsed && (
             <span className={sidebarStyles.activeIndicator}></span>
           )}
         </Link>
-      </motion.li>
+      </li>
     );
   };
   return (
     <>
-      <motion.div
+      <div
         ref={sidebarRef}
         className={sidebarStyles.sidebarContainer.base}
-        initial={{ x: -100, opacity: 0 }}
-        animate={{ x: 0, opacity: 1, width: isCollapsed ? 80 : 256 }}
-        transition={{ type: 'spring', damping: 25 }}
+        style={{ width: isCollapsed ? 80 : 256 }}
       >
         <div className={sidebarStyles.sidebarInner.base}>
           <button
             onClick={toggleSidebar}
             className={sidebarStyles.toggleButton.base}
           >
-            <motion.div
-              initial={{ rotate: 0 }}
-              animate={{ rotate: isCollapsed ? 0 : 180 }}
-              transition={{ duration: 0.3 }}
-            >
+            <div style={{ transform: `rotate(${isCollapsed ? 0 : 180}deg)` }}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
@@ -143,7 +127,7 @@ const Sidebar = ({ user, isCollapsed, setIsCollapsed }) => {
                   points={isCollapsed ? '9 18 15 12 9 6' : '15 18 9 12 15 6'}
                 ></polyline>
               </svg>
-            </motion.div>
+            </div>
           </button>
 
           <div
@@ -157,12 +141,7 @@ const Sidebar = ({ user, isCollapsed, setIsCollapsed }) => {
             <div className="flex items-center">
               <div className={sidebarStyles.userInitials.base}>{initial}</div>
               {!isCollapsed && (
-                <motion.div
-                  className="ml-3 overflow-hidden"
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -10 }}
-                >
+                <div className="ml-3 overflow-hidden">
                   <h2
                     className="text-sm font-bold text-gray-800 truncate"
                     title={username}
@@ -172,7 +151,7 @@ const Sidebar = ({ user, isCollapsed, setIsCollapsed }) => {
                   <p className="text-xs text-gray-500 truncate" title={email}>
                     {email}
                   </p>
-                </motion.div>
+                </div>
               )}
             </div>
           </div>
@@ -191,8 +170,10 @@ const Sidebar = ({ user, isCollapsed, setIsCollapsed }) => {
                 : sidebarStyles.footerContainer.expanded,
             )}
           >
-            <Link
-              to={'https://www.shoriful.me/#contact'}
+            <a
+              href="https://www.shoriful.me/#contact"
+              target="_blank"
+              rel="noreferrer"
               className={cn(
                 sidebarStyles.footerLink.base,
                 isCollapsed
@@ -202,7 +183,7 @@ const Sidebar = ({ user, isCollapsed, setIsCollapsed }) => {
             >
               <HelpCircle size={20} className="text-gray-500" />
               {!isCollapsed && <span>Support</span>}
-            </Link>
+            </a>
 
             <button
               onClick={handleLogout}
@@ -216,111 +197,96 @@ const Sidebar = ({ user, isCollapsed, setIsCollapsed }) => {
             </button>
           </div>
         </div>
-      </motion.div>
+      </div>
 
-      <motion.button
+      <button
         onClick={() => setMobileOpen(prev => !prev)}
         className={sidebarStyles.mobileMenuButton}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
       >
         {mobileOpen ? <X size={24} /> : <Menu size={24} />}
-      </motion.button>
+      </button>
 
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            className={sidebarStyles.mobileOverlay}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <motion.div
-              className={sidebarStyles.mobileBackdrop}
-              onClick={() => setMobileOpen(false)}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            />
+      {mobileOpen && (
+        <div className={sidebarStyles.mobileOverlay}>
+          <div
+            className={sidebarStyles.mobileBackdrop}
+            onClick={() => setMobileOpen(false)}
+          />
 
-            <motion.div
-              ref={sidebarRef}
-              className={sidebarStyles.mobileSidebar.base}
-              initial={{ x: '-100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '-100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            >
-              <div className="relative h-full flex flex-col">
-                <div className={sidebarStyles.mobileHeader}>
-                  <div className={sidebarStyles.mobileUserContainer}>
-                    <div className={sidebarStyles.userInitials.base}>
-                      {initial}
-                    </div>
-                    <div className="">
-                      <h2 className="text-lg font-bold text-gray-800">
-                        {username}
-                      </h2>
-                      <p className="text-sm text-gray-500">{email}</p>
-                    </div>
+          <div ref={sidebarRef} className={sidebarStyles.mobileSidebar.base}>
+            <div className="relative h-full flex flex-col">
+              <div className={sidebarStyles.mobileHeader}>
+                <div className={sidebarStyles.mobileUserContainer}>
+                  <div className={sidebarStyles.userInitials.base}>{initial}</div>
+                  <div className="">
+                    <h2 className="text-lg font-bold text-gray-800">
+                      {username}
+                    </h2>
+                    <p className="text-sm text-gray-500">{email}</p>
                   </div>
-                  <button
-                    onClick={() => setMobileOpen(false)}
-                    className={sidebarStyles.mobileCloseButton}
-                  >
-                    <X size={24} className="text-gray-600" />
-                  </button>
                 </div>
-
-                <div className="flex-1 overflow-y-auto py-4">
-                  <ul className={sidebarStyles.mobileMenuList}>
-                    {MENU_ITEMS.map(({ text, path, icon }) => (
-                      <motion.li key={text} whileTap={{ scale: 0.98 }}>
-                        <Link
-                          to={path}
-                          onClick={() => setMobileOpen(false)}
-                          className={cn(
-                            sidebarStyles.mobileMenuItem.base,
-                            pathname === path
-                              ? sidebarStyles.mobileMenuItem.active
-                              : sidebarStyles.mobileMenuItem.inactive,
-                          )}
-                        >
-                          <span
-                            className={
-                              pathname === path
-                                ? sidebarStyles.menuIcon.active
-                                : sidebarStyles.menuIcon.inactive
-                            }
-                          >
-                            {icon}
-                          </span>
-                          <span>{text}</span>
-                        </Link>
-                      </motion.li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className={sidebarStyles.mobileFooter}>
-                  <Link to={'https://shoriful.me'} onClick={() => setMobileOpen(false)} className={sidebarStyles.mobileFooterLink}>
-                  <HelpCircle size={20} className="text-gray-500" />
-                    <span>Support</span>
-                  </Link>
-
-                  <button
-                    onClick={handleLogout}
-                    className={sidebarStyles.mobileLogoutButton}
-                  >
-                    <LogOut size={20} className="text-gray-500" />
-                    <span>Logout</span>
-                  </button>
-                </div>
+                <button
+                  onClick={() => setMobileOpen(false)}
+                  className={sidebarStyles.mobileCloseButton}
+                >
+                  <X size={24} className="text-gray-600" />
+                </button>
               </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+
+              <div className="flex-1 overflow-y-auto py-4">
+                <ul className={sidebarStyles.mobileMenuList}>
+                  {MENU_ITEMS.map(({ text, path, icon }) => (
+                    <li key={text}>
+                      <Link
+                        to={path}
+                        onClick={() => setMobileOpen(false)}
+                        className={cn(
+                          sidebarStyles.mobileMenuItem.base,
+                          pathname === path
+                            ? sidebarStyles.mobileMenuItem.active
+                            : sidebarStyles.mobileMenuItem.inactive,
+                        )}
+                      >
+                        <span
+                          className={
+                            pathname === path
+                              ? sidebarStyles.menuIcon.active
+                              : sidebarStyles.menuIcon.inactive
+                          }
+                        >
+                          {icon}
+                        </span>
+                        <span>{text}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className={sidebarStyles.mobileFooter}>
+                <a
+                  href="https://shoriful.me"
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={() => setMobileOpen(false)}
+                  className={sidebarStyles.mobileFooterLink}
+                >
+                  <HelpCircle size={20} className="text-gray-500" />
+                  <span>Support</span>
+                </a>
+
+                <button
+                  onClick={handleLogout}
+                  className={sidebarStyles.mobileLogoutButton}
+                >
+                  <LogOut size={20} className="text-gray-500" />
+                  <span>Logout</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

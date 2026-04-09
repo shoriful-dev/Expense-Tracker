@@ -7,6 +7,7 @@ import axios from 'axios';
 import { Outlet } from 'react-router-dom';
 import { formatBDT } from '../utils/currency';
 import { usePreferences } from '../context/PreferencesContext.jsx';
+import { formatDate } from '../utils/date.js';
 
 const API_BASE = 'http://localhost:8000/api';
 
@@ -474,7 +475,7 @@ const Layout = ({ onLogout, user }) => {
                             {description}
                           </p>
                           <p className={styles.transactions.meta}>
-                            {new Date(date).toLocaleDateString()}
+                            {formatDate(date, { digits: prefs.digits })}
                             <span className="ml-2 capitalize">{category}</span>
                           </p>
                         </div>
@@ -483,6 +484,7 @@ const Layout = ({ onLogout, user }) => {
                       <span className={styles.colors.transaction.text(type)}>
                         {type === 'income' ? '+' : '-'}
                         {formatBDT(Math.abs(Number(amount)), {
+                          digits: prefs.digits,
                           maximumFractionDigits: 2,
                           minimumFractionDigits: 2,
                         })}

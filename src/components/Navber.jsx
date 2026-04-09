@@ -1,12 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { navbarStyles } from '../assets/dummyStyles';
-import img1 from '../assets/logo.png';
+import img1 from '../assets/logo.svg';
 import { ChevronDown, LogOut, User, Languages } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { usePreferences } from '../context/PreferencesContext.jsx';
-
-const BASE_URL = 'http://localhost:8000/api';
 
 const Navber = ({user: propUser, onLogout}) => {
   const navigate = useNavigate();
@@ -99,13 +96,16 @@ const Navber = ({user: propUser, onLogout}) => {
                   </div>
                 </div>
 
+                <div className="p-2">
                 <div className={navbarStyles.menuItemContainer}>
                   <button onClick={() => {
                     setMenuOpen(false);
                     navigate('/profile');
                   }} className={navbarStyles.menuItem}>
-                    <User className='w-4 h-4'/>
-                    <span>My Profile</span>
+                    <span className={navbarStyles.menuItemLeft}>
+                      <User className='w-4 h-4'/>
+                      <span className="truncate">My Profile</span>
+                    </span>
                   </button>
                 </div>
 
@@ -118,11 +118,15 @@ const Navber = ({user: propUser, onLogout}) => {
                     className={navbarStyles.menuItem}
                     title="Toggle Bengali/English digits"
                   >
-                    <Languages className="w-4 h-4 text-teal-700" />
-                    <span>
-                      Digits: {prefs.digits === 'bn' ? 'বাংলা' : 'English'}
+                    <span className={navbarStyles.menuItemLeft}>
+                      <Languages className="w-4 h-4 text-teal-700" />
+                      <span className="truncate">Digits</span>
+                    </span>
+                    <span className={navbarStyles.menuItemRight}>
+                      {prefs.digits === 'bn' ? 'বাংলা' : 'English'}
                     </span>
                   </button>
+                </div>
                 </div>
 
                 <div className={navbarStyles.menuItemBorder}>
