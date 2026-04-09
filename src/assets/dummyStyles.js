@@ -702,7 +702,7 @@ export const navbarStyles = {
     "flex items-center justify-between px-4 py-3 md:px-8 max-w-7xl mx-auto",
 
   logoContainer: "flex items-center gap-0 cursor-pointer",
-  logoImage: "w-15 h-15 rounded-xl overflow-hidden",
+  logoImage: "w-16 h-16 rounded-xl overflow-hidden",
   logoText:
     "lg:text-3xl md:text-3xl text-2xl text-gray-900 font-[550] lobster-regular",
 

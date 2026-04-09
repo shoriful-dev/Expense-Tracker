@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import { navbarStyles } from '../assets/dummyStyles';
-import img1 from '../assets/logo.svg';
 import { ChevronDown, LogOut, User, Languages } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { usePreferences } from '../context/PreferencesContext.jsx';
@@ -49,7 +48,7 @@ const Navber = ({user: propUser, onLogout}) => {
           className={navbarStyles.logoContainer}
         >
           <div className={navbarStyles.logoImage}>
-            <img src={img1} alt="Logo" />
+            <img src="/logo.png" alt="Logo" />
           </div>
           <span className={navbarStyles.logoText}>Expense Tracker</span>
         </div>
