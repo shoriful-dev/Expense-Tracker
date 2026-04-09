@@ -37,6 +37,7 @@ import {
 import FinancialCard from './../components/FinancialCard';
 import GaugeCard from '../components/GaugeCard';
 import { Legend, Pie, ResponsiveContainer, Tooltip } from 'recharts';
+import AddTransactionModal from '../components/Add';
 
 const API_BASE = 'http://localhost:8000/api';
 
@@ -755,6 +756,14 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+
+      <AddTransactionModal
+        showModal={showModal}
+        setShowModal={setShowModal}
+        newTransaction={newTransaction}
+        setNewTransaction={setNewTransaction}
+        loading={loading}
+      />
     </div>
   );
 };
