@@ -30,8 +30,11 @@ import FinancialCard from '../components/FinancialCard';
 import { getTimeFrameRange, generateChartPoints } from '../components/Helpers';
 import { INCOME_COLORS, CATEGORY_ICONS_Inc } from '../assets/color';
 import { incomeStyles as styles } from '../assets/dummyStyles';
+import { formatBDT } from '../utils/currency';
+import { toast } from 'react-toastify';
+import { usePreferences } from '../context/PreferencesContext.jsx';
 
-const API_BASE = 'http://localhost:4000/api';
+const API_BASE = 'http://localhost:8000/api';
 
 function toIsoWithClientTime(dateValue) {
   if (!dateValue) {
@@ -48,11 +51,12 @@ function toIsoWithClientTime(dateValue) {
   try {
     return new Date(dateValue).toISOString();
   } catch (err) {
+    console.error(err);
     return new Date().toISOString();
   }
 }
 
-const IncomeChart = ({ chartData, timeFrame, timeFrameRange }) => (
+const IncomeChart = ({ chartData, timeFrame, timeFrameRange, digits = 'bn' }) => (
   <div className={styles.chartContainer}>
     <div className={styles.chartHeaderContainer}>
       <h3 className={styles.chartTitle}>
@@ -98,11 +102,19 @@ const IncomeChart = ({ chartData, timeFrame, timeFrameRange }) => (
             tickLine={false}
             tick={{ fill: '#6b7280', fontSize: 12 }}
             width={50}
-            tickFormatter={value => `$${value.toLocaleString()}`}
+            tickFormatter={value =>
+              formatBDT(value, {
+                digits,
+                maximumFractionDigits: 0,
+              })
+            }
           />
           <Tooltip
             formatter={value => [
-              `$${Math.round(value).toLocaleString()}`,
+              formatBDT(Math.round(value), {
+                digits,
+                maximumFractionDigits: 0,
+              }),
               'Income',
             ]}
             contentStyle={styles.tooltipContent}
@@ -199,8 +211,11 @@ const Income = () => {
     date: new Date().toISOString().split('T')[0],
   });
 
+  const { prefs } = usePreferences();
+
   const getAuthHeaders = useCallback(() => {
-    const token = localStorage.getItem('token');
+    const token =
+      localStorage.getItem('token') || sessionStorage.getItem('token');
     return token ? { Authorization: `Bearer ${token}` } : {};
   }, []);
 
@@ -352,9 +367,10 @@ const Income = () => {
         date: toIsoWithClientTime(newTransaction.date),
       };
 
-      await axios.post(`${API_BASE}/income/add`, payload, {
+      const res = await axios.post(`${API_BASE}/income/add`, payload, {
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
       });
+      const createdId = res?.data?.income?._id || res?.data?.income?.id || null;
       await refreshTransactions();
       await fetchOverview(timeFrame ?? 'monthly');
 
@@ -366,10 +382,36 @@ const Income = () => {
         category: 'Salary',
       });
       setShowModal(false);
+
+      const toastId = toast.success(
+        <div className="flex items-center justify-between gap-3">
+          <span>Income added.</span>
+          {createdId && (
+            <button
+              className="px-2 py-1 rounded-md bg-red-50 text-red-700 border border-red-200"
+              onClick={async () => {
+                try {
+                  await axios.delete(`${API_BASE}/income/delete/${createdId}`, {
+                    headers: getAuthHeaders(),
+                  });
+                  await refreshTransactions();
+                  await fetchOverview(timeFrame ?? 'monthly');
+                  toast.dismiss(toastId);
+                  toast.info('Income removed.');
+                } catch (e) {
+                  toast.error('Failed to remove income.');
+                }
+              }}
+            >
+              Undo
+            </button>
+          )}
+        </div>,
+      );
     } catch (err) {
       console.error('Add income error:', err);
       const serverMsg = err?.response?.data?.message;
-      alert(serverMsg || 'Server error while adding income.');
+      toast.error(serverMsg || 'Server error while adding income.');
     } finally {
       setLoading(false);
     }
@@ -526,7 +568,10 @@ const Income = () => {
             </div>
           }
           label="Total Income"
-          value={`$${Number(totalIncome || 0).toLocaleString()}`}
+          value={formatBDT(Number(totalIncome || 0), {
+            digits: prefs.digits,
+            maximumFractionDigits: 0,
+          })}
           additionalContent={
             <div className="mt-2 text-xs text-gray-500 flex items-center">
               <Calendar className="w-3 h-3 mr-1" /> {timeFrameRange.label}
@@ -543,7 +588,10 @@ const Income = () => {
             </div>
           }
           label="Average Income"
-          value={`$${Number(averageIncome || 0).toLocaleString()}`}
+          value={formatBDT(Number(averageIncome || 0), {
+            digits: prefs.digits,
+            maximumFractionDigits: 0,
+          })}
           additionalContent={
             <div className="mt-2 text-xs text-gray-500 flex items-center">
               <Calendar className="w-3 h-3 mr-1" /> {transactionsCount}{' '}
@@ -575,6 +623,7 @@ const Income = () => {
         chartData={chartData}
         timeFrame={timeFrame}
         timeFrameRange={timeFrameRange}
+        digits={prefs.digits}
       />
 
       <div className={styles.listContainer}>
@@ -609,6 +658,7 @@ const Income = () => {
                 onCancel={() => setEditingId(null)}
                 onDelete={handleDeleteTransaction}
                 type="income"
+                categories={['Salary', 'Freelance', 'Investment', 'Bonus', 'Other']}
                 categoryIcons={CATEGORY_ICONS_Inc}
                 setEditingId={setEditingId}
               />

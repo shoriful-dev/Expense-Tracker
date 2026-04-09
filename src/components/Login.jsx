@@ -28,7 +28,7 @@ const Login = ({ onLogin, API_URL = 'http://localhost:8000' }) => {
     const storage = rememberMe ? localStorage : sessionStorage;
     try {
       if (token) storage.setItem('token', token);
-      if (profile) storage.setItem('profile', JSON.stringify(profile));
+      if (profile) storage.setItem('user', JSON.stringify(profile));
     } catch (error) {
       console.log(error);
     }

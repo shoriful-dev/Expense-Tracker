@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { transactionItemStyles } from '../assets/dummyStyles';
 import { colorClasses } from '../assets/color';
 import { DollarSign, Edit, Save, Trash2, X } from 'lucide-react';
+import { formatBDT } from '../utils/currency';
+import { usePreferences } from '../context/PreferencesContext.jsx';
 
 const TransactionItem = ({
   transaction,
@@ -12,11 +14,13 @@ const TransactionItem = ({
   onCancel,
   onDelete,
   type = 'expense',
+  categories = [],
   categoryIcons,
   setEditingId,
   amountClass = 'font-bold truncate block text-right',
   iconClass = 'p-3 rounded-xl flex-shrink-0',
 }) => {
+  const { prefs } = usePreferences();
   const [errors, setErrors] = useState({ description: '', amount: '' });
 
   const classes = colorClasses[type];
@@ -87,15 +91,49 @@ const TransactionItem = ({
               )}
             </>
           ) : (
-            <p className={transactionItemStyles.description}>
+            <p
+              className={transactionItemStyles.description}
+              title={transaction.description}
+            >
               {transaction.description}
             </p>
           )}
 
-          <p className={transactionItemStyles.details}>
-            {new Date(transaction.date).toLocaleDateString()} •{' '}
-            {transaction.category}
-          </p>
+          {isEditing ? (
+            <div className="mt-2 flex flex-col md:flex-row gap-2">
+              <input
+                type="date"
+                value={(editForm.date || '').slice(0, 10)}
+                onChange={e =>
+                  setEditForm(prev => ({ ...prev, date: e.target.value }))
+                }
+                className={transactionItemStyles.input(false, classes)}
+              />
+              <select
+                value={editForm.category || ''}
+                onChange={e =>
+                  setEditForm(prev => ({ ...prev, category: e.target.value }))
+                }
+                className={transactionItemStyles.input(false, classes)}
+              >
+                {(categories?.length ? categories : [transaction.category])
+                  .filter(Boolean)
+                  .map(c => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+              </select>
+            </div>
+          ) : (
+            <p
+              className={transactionItemStyles.details}
+              title={`${new Date(transaction.date).toLocaleDateString()} • ${transaction.category}`}
+            >
+              {new Date(transaction.date).toLocaleDateString()} •{' '}
+              {transaction.category}
+            </p>
+          )}
         </div>
       </div>
 
@@ -126,9 +164,15 @@ const TransactionItem = ({
           ) : (
             <span
               className={transactionItemStyles.amountText(amountClass, classes)}
+              title={`${sign}${formatBDT(Math.abs(Number(transaction.amount)), {
+                digits: prefs.digits,
+                maximumFractionDigits: 2,
+                minimumFractionDigits: 2,
+              })}`}
             >
-              {sign}$
-              {Number(transaction.amount).toLocaleString('en-US', {
+              {sign}
+              {formatBDT(Math.abs(Number(transaction.amount)), {
+                digits: prefs.digits,
                 maximumFractionDigits: 2,
                 minimumFractionDigits: 2,
               })}

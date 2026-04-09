@@ -163,10 +163,15 @@ const Sidebar = ({ user, isCollapsed, setIsCollapsed }) => {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -10 }}
                 >
-                  <h2 className="text-sm font-bold text-gray-800 truncate">
+                  <h2
+                    className="text-sm font-bold text-gray-800 truncate"
+                    title={username}
+                  >
                     {username}
                   </h2>
-                  <p className="text-xs text-gray-500 truncate">{email}</p>
+                  <p className="text-xs text-gray-500 truncate" title={email}>
+                    {email}
+                  </p>
                 </motion.div>
               )}
             </div>

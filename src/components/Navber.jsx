@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { navbarStyles } from '../assets/dummyStyles';
 import img1 from '../assets/logo.png';
-import {ChevronDown, LogOut, User} from 'lucide-react';
+import { ChevronDown, LogOut, User, Languages } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { usePreferences } from '../context/PreferencesContext.jsx';
 
 const BASE_URL = 'http://localhost:8000/api';
 
@@ -11,33 +12,14 @@ const Navber = ({user: propUser, onLogout}) => {
   const navigate = useNavigate();
   const menuref = useRef()
   const [menuOpen, setMenuOpen] = useState(false);
+  const { prefs, setDigits } = usePreferences();
 
   const user = propUser || {
     name: '',
     email: '',
   };
 
-  // to fetch the user data from server
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if(!token) return;
-        const response = await axios.get(`${BASE_URL}/user/me`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const userData = response.data.user || response.data;
-        setUser(userData);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    if(!propUser) {
-      fetchUserData();
-    }
-  }, [propUser]);
+  // Reliance on propUser passed from parent
 
   const handleLogout = () => {
     setMenuOpen(false);
@@ -60,6 +42,7 @@ const Navber = ({user: propUser, onLogout}) => {
       document.removeEventListener('click', handleOutsideClick);
     }
   }, [])
+
   return (
     <header className={navbarStyles.header}>
       <div className={navbarStyles.container}>
@@ -84,10 +67,13 @@ const Navber = ({user: propUser, onLogout}) => {
                 <div className={navbarStyles.statusIndicator}></div>
               </div>
               <div className={navbarStyles.userTextContainer}>
-                <p className={navbarStyles.userName}>
+                <p className={navbarStyles.userName} title={user?.name || 'User'}>
                   {user?.name || 'User'}
                 </p>
-                <p className={navbarStyles.userEmail}>
+                <p
+                  className={navbarStyles.userEmail}
+                  title={user?.email || 'user@expensetracker.com'}
+                >
                   {user?.email || 'user@expensetracker.com'}
                 </p>
               </div>
@@ -120,6 +106,22 @@ const Navber = ({user: propUser, onLogout}) => {
                   }} className={navbarStyles.menuItem}>
                     <User className='w-4 h-4'/>
                     <span>My Profile</span>
+                  </button>
+                </div>
+
+                <div className={navbarStyles.menuItemContainer}>
+                  <button
+                    onClick={() => {
+                      const next = prefs.digits === 'bn' ? 'en' : 'bn';
+                      setDigits(next);
+                    }}
+                    className={navbarStyles.menuItem}
+                    title="Toggle Bengali/English digits"
+                  >
+                    <Languages className="w-4 h-4 text-teal-700" />
+                    <span>
+                      Digits: {prefs.digits === 'bn' ? 'বাংলা' : 'English'}
+                    </span>
                   </button>
                 </div>
 

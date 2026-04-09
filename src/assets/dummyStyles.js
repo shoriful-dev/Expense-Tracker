@@ -1,6 +1,6 @@
 export const dashboardStyles = {
   // Layout styles
-  container: "min-h-screen p-4 md:p-6",
+  container: "min-h-screen p-4 md:p-6 text-gray-900 dark:text-gray-100",
   
   // Header styles
   headerContainer: "bg-gradient-to-r from-teal-500/10 to-cyan-500/10 backdrop-blur-lg rounded-3xl p-6 mb-8 shadow-lg border border-white/30",
@@ -36,7 +36,8 @@ export const dashboardStyles = {
   pieChartHeader: "flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5 gap-3",
   pieChartTitle: "text-xl lg:pt-3 xl:pl-3 font-bold text-gray-800 mb-5 flex items-center gap-3",
   pieChartSubtitle: "text-sm lg:text-center xl:text-start xl:pl-3 text-gray-500 mb-3",
-  pieChartHeight: "h-90 xl:h-80",
+  // NOTE: Tailwind doesn't ship `h-90` by default; use arbitrary values so charts always render.
+  pieChartHeight: "h-[360px] xl:h-[320px]",
   
   // Pie chart tooltip styles
   tooltipContent: {
@@ -56,7 +57,7 @@ export const dashboardStyles = {
   listsGrid: "grid grid-cols-1 gap-6",
   
   // List container styles
-  listContainer: "bg-white rounded-2xl lg:p-5 md:p-6 -mx-8 md:-mx-3 shadow-sm border border-gray-100",
+  listContainer: "bg-white dark:bg-gray-900 rounded-2xl lg:p-5 md:p-6 -mx-8 md:-mx-3 shadow-sm border border-gray-100 dark:border-gray-800",
   listHeader: "flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5 gap-3",
   listTitle: "text-xl font-bold text-gray-800 md:mt-3 mt-3 flex items-center gap-3",
   listSubtitle: "text-sm text-gray-500 font-normal",
@@ -67,8 +68,8 @@ export const dashboardStyles = {
   
   // Transaction item styles
   transactionList: "space-y-3",
-  incomeTransactionItem: "flex items-center px-2 mx-2 my-2 md:p-4 md:mx-2 lg:px-3 justify-between p-3 bg-green-50 rounded-lg",
-  expenseTransactionItem: "flex items-center justify-between mx-1 p-3 lg:p-3 md:p-4 md:mx-2 bg-orange-50 rounded-lg",
+  incomeTransactionItem: "flex items-center px-2 mx-2 my-2 md:p-4 md:mx-2 lg:px-3 justify-between p-3 bg-green-50 dark:bg-green-950/30 rounded-lg",
+  expenseTransactionItem: "flex items-center justify-between mx-1 p-3 lg:p-3 md:p-4 md:mx-2 bg-orange-50 dark:bg-orange-950/30 rounded-lg",
   
   // Transaction icon container
   incomeIconContainer: "p-2 bg-green-100 rounded-lg",
@@ -76,12 +77,12 @@ export const dashboardStyles = {
   
   // Transaction content
   transactionContent: "flex items-center lg:gap-3 md:gap-3 gap-1",
-  transactionDescription: "font-medium text-gray-800",
-  transactionCategory: "text-sm text-gray-500",
+  transactionDescription: "font-medium text-gray-800 dark:text-gray-100",
+  transactionCategory: "text-sm text-gray-500 dark:text-gray-400",
   transactionAmount: "text-right",
   incomeAmount: "font-bold text-green-600",
   expenseAmount: "font-bold text-orange-600",
-  transactionDate: "text-sm text-gray-500",
+  transactionDate: "text-sm text-gray-500 dark:text-gray-400",
   
   // Empty state styles
   emptyState: "text-center py-8",
@@ -118,7 +119,7 @@ export const chartStyles = {
 export const incomeStyles = {
   // Layout
   wrapper: "space-y-4 md:space-y-6 p-3 md:p-4 max-w-7xl mx-auto",
-  headerContainer: "bg-white rounded-lg md:rounded-xl p-4 -mx-7 lg:-mx-7 overflow-x-hidden md:p-6 mb-6 md:mb-8 shadow",
+  headerContainer: "bg-white dark:bg-gray-900 rounded-lg md:rounded-xl p-4 -mx-7 lg:-mx-7 overflow-x-hidden md:p-6 mb-6 md:mb-8 shadow border border-transparent dark:border-gray-800",
   header: "flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 md:gap-4 mb-4 md:mb-6",
   headerTitle: "text-xl md:text-2xl lg:text-3xl font-bold text-gray-800",
   headerSubtitle: "text-gray-600 mt-1 text-sm md:text-base",
@@ -132,7 +133,7 @@ export const incomeStyles = {
   chartTitle: "text-lg md:text-xl font-bold text-gray-800 mb-4 md:mb-5 flex items-center gap-2 md:gap-3",
   
   // Transaction List
-  listContainer: "bg-white rounded-xl -mx-7 md:rounded-2xl p-4 md:p-6 shadow-sm border border-gray-100 relative overflow-hidden",
+  listContainer: "bg-white dark:bg-gray-900 rounded-xl -mx-7 md:rounded-2xl p-4 md:p-6 shadow-sm border border-gray-100 dark:border-gray-800 relative overflow-hidden",
   sectionTitle: "text-lg md:text-xl font-bold text-gray-800 mb-4 md:mb-5 flex items-center gap-2 md:gap-3",
   
   // Filter Section
@@ -194,7 +195,7 @@ export const expensePageStyles = {
   container: "space-y-6 max-w-7xl",
   
   // Header card
-  headerCard: "bg-white rounded-xl p-4  lg:-mx-0 -mx-3.5  overflow-x-hidden mb-8 shadow",
+  headerCard: "bg-white dark:bg-gray-900 rounded-xl p-4  lg:-mx-0 -mx-3.5  overflow-x-hidden mb-8 shadow border border-transparent dark:border-gray-800",
   headerContainer: "flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 md:gap-4 mb-4 md:mb-6",
   headerTitle: "text-2xl md:text-3xl font-bold text-gray-800",
   headerSubtitle: "text-gray-600 mt-1",
@@ -211,7 +212,7 @@ export const expensePageStyles = {
   chart: "h-80",
   
   // Transactions container
-  transactionsContainer: "bg-white rounded-2xl p-5 -mx-4 lg:-mx-0 md:-mx-5 shadow-sm border border-gray-100 relative overflow-hidden",
+  transactionsContainer: "bg-white dark:bg-gray-900 rounded-2xl p-5 -mx-4 lg:-mx-0 md:-mx-5 shadow-sm border border-gray-100 dark:border-gray-800 relative overflow-hidden",
   transactionsHeader: "flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 md:gap-4 mb-4 md:mb-5",
   transactionsTitle: "text-lg md:text-xl font-bold text-gray-800 mb-4 md:mb-5 flex items-center gap-2 md:gap-3",
   filterSelect: "appearance-none bg-white border border-gray-300 rounded-lg pl-3 pr-8 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent w-full",
@@ -411,7 +412,7 @@ export const loginStyles = {
 // Styles for Navbar component
 export const navbarStyles = {
   // Layout and container styles
-  header: "sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm",
+  header: "sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 shadow-sm",
   container: "flex items-center justify-between px-4 py-3 md:px-8 max-w-7xl mx-auto",
   
   // Logo styles
@@ -432,15 +433,15 @@ export const navbarStyles = {
   chevronIcon: (isOpen) => `w-4 h-4 text-gray-500 transition-transform ${isOpen ? "rotate-180" : ""}`,
   
   // Dropdown menu styles
-  dropdownMenu: "absolute top-14 right-0 w-56 bg-white rounded-xl shadow-lg border border-gray-100 z-50",
+  dropdownMenu: "absolute top-14 right-0 w-56 bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-100 dark:border-gray-800 z-50",
   dropdownHeader: "px-4 py-3 border-b border-gray-100",
   dropdownAvatar: "w-10 h-10 rounded-full bg-gradient-to-br from-teal-600 to-cyan-500 flex items-center justify-center text-white font-bold text-lg",
-  dropdownName: "text-sm text-gray-800 ",
-  dropdownEmail: "text-xs text-gray-500",
+  dropdownName: "text-sm text-gray-800 dark:text-gray-100 ",
+  dropdownEmail: "text-xs text-gray-500 dark:text-gray-400",
   
   // Menu items
   menuItemContainer: "p-1.5",
-  menuItem: "w-full px-4 py-3 text-left hover:bg-gray-50 text-sm text-gray-700 flex items-center gap-3 rounded-lg",
+  menuItem: "w-full px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-800 text-sm text-gray-700 dark:text-gray-200 flex items-center gap-3 rounded-lg",
   menuItemBorder: "p-1.5 border-t border-gray-100",
   logoutButton: "flex w-full items-center gap-3 px-4 py-3 text-sm hover:bg-red-50 text-red-600 rounded-lg"
 };
@@ -497,7 +498,7 @@ export const signupStyles = {
 export const transactionItemStyles = {
   // Container styles
   container: (isEditing, classes) => 
-    `flex flex-col md:flex-row items-stretch justify-between gap-3 p-4 rounded-xl border border-gray-100 mb-3 last:mb-0 ${isEditing ? classes.bg : "hover:bg-gray-50"}`,
+    `flex flex-col md:flex-row items-stretch justify-between gap-3 p-4 rounded-xl border border-gray-100 dark:border-gray-800 mb-3 last:mb-0 ${isEditing ? classes.bg : "hover:bg-gray-50 dark:hover:bg-gray-800/40"}`,
   
   // Layout styles
   mainContainer: "flex items-center gap-3 flex-1 min-w-0",
@@ -510,8 +511,8 @@ export const transactionItemStyles = {
   
   // Content styles
   contentContainer: "min-w-0 flex-1",
-  description: "font-medium text-gray-800 truncate",
-  details: "text-xs text-gray-500 mt-1 truncate",
+  description: "font-medium text-gray-800 dark:text-gray-100 truncate",
+  details: "text-xs text-gray-500 dark:text-gray-400 mt-1 truncate",
   
   // Input styles
   input: (hasError, classes) => 
@@ -631,7 +632,7 @@ export const cn = (...classes) => classes.filter(Boolean).join(" ");
 export const styles = {
   // Layout and Container Styles
   layout: {
-    root: "min-h-screen bg-gradient-to-br from-gray-50 to-gray-100",
+    root: "min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900",
     mainContainer: (sidebarCollapsed) => 
       `p-4 pt-6 transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-20' : 'lg:ml-64'}`,
   },

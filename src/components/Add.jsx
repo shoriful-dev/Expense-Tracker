@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { modalStyles } from '../assets/dummyStyles';
 import { X } from 'lucide-react';
 
@@ -8,9 +8,11 @@ const AddTransactionModal = ({
   newTransaction,
   setNewTransaction,
   handleAddTransaction,
+  loading = false,
   type = 'both',
   title = 'Add New Transaction',
   buttonText = 'Add Transaction',
+  requireConfirm = true,
   categories = [
     'Food',
     'Housing',
@@ -36,6 +38,23 @@ const AddTransactionModal = ({
   const minDate = `${currentYear}-01-01`;
 
   const colorClass = modalStyles.colorClasses[color];
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const confirmTitle = useMemo(() => {
+    if (type === 'income') return 'Confirm add income';
+    if (type === 'expense') return 'Confirm add expense';
+    return 'Confirm add transaction';
+  }, [type]);
+
+  const confirmMessage = useMemo(() => {
+    const txType =
+      type === 'both' ? newTransaction?.type || 'transaction' : type;
+    const desc = String(newTransaction?.description || '').trim();
+    const amt = newTransaction?.amount;
+    const date = newTransaction?.date;
+    const cat = newTransaction?.category;
+    return `Add ${txType}?\n\nDescription: ${desc || '-'}\nAmount: ${amt || '-'}\nCategory: ${cat || '-'}\nDate: ${date || '-'}`;
+  }, [type, newTransaction]);
 
   return (
     <div className={modalStyles.overlay}>
@@ -53,7 +72,12 @@ const AddTransactionModal = ({
         <form
           onSubmit={e => {
             e.preventDefault();
-            handleAddTransaction();
+            if (loading) return;
+            if (!requireConfirm) {
+              handleAddTransaction();
+              return;
+            }
+            setShowConfirm(true);
           }}
         >
           <div className={modalStyles.form}>
@@ -153,7 +177,12 @@ const AddTransactionModal = ({
                 type="date"
                 value={newTransaction.date}
                 onChange={e =>
-                  newTransaction(prev => ({ ...prev, date: e.target.value }))
+                  (() => {
+                    return setNewTransaction(prev => ({
+                      ...prev,
+                      date: e.target.value,
+                    }));
+                  })()
                 }
                 className={modalStyles.input(colorClass.ring)}
                 min={minDate}
@@ -161,12 +190,60 @@ const AddTransactionModal = ({
                 required
               />
             </div>
-            <button type='submit' className={modalStyles.submitButton(colorClass.button)}>
+            <button
+              type="submit"
+              className={modalStyles.submitButton(colorClass.button)}
+              disabled={loading}
+            >
               {buttonText}
             </button>
           </div>
         </form>
       </div>
+
+      {showConfirm && (
+        <div className={modalStyles.overlay}>
+          <div className={modalStyles.modalContainer}>
+            <div className={modalStyles.modalHeader}>
+              <h3 className={modalStyles.modalTitle}>{confirmTitle}</h3>
+              <button
+                className={modalStyles.closeButton}
+                onClick={() => setShowConfirm(false)}
+                disabled={loading}
+              >
+                <X size={24} />
+              </button>
+            </div>
+            <div className="px-6 pb-6">
+              <pre className="whitespace-pre-wrap text-sm text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg p-4">
+                {confirmMessage}
+              </pre>
+              <div className="flex gap-3 pt-4">
+                <button
+                  type="button"
+                  className={modalStyles.submitButton('bg-gray-500 hover:bg-gray-600')}
+                  onClick={() => setShowConfirm(false)}
+                  disabled={loading}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className={modalStyles.submitButton(colorClass.button)}
+                  onClick={() => {
+                    if (loading) return;
+                    setShowConfirm(false);
+                    handleAddTransaction();
+                  }}
+                  disabled={loading}
+                >
+                  Confirm
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

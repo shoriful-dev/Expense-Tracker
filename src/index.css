@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+/* Tailwind v4: force dark: variant to be class-based (NOT system theme). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  color-scheme: light;
+}
+
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
 }
@@ -31,6 +38,7 @@
   overflow-y: auto;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
+
 
 .modal-overlay {
   position: fixed;

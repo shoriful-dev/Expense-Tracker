@@ -13,6 +13,10 @@ import Signup from './components/SignUp';
 import axios from 'axios';
 import Income from './pages/Income';
 import Expense from './pages/Expense';
+import Profile from './pages/Profile';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { usePreferences } from './context/PreferencesContext.jsx';
 
 const API_URL = 'http://localhost:8000';
 
@@ -44,11 +48,16 @@ const ScrollToTop = () => {
 };
 
 const App = () => {
+  usePreferences(); // keep provider alive for digits toggle
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [transaction, setTransaction] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.documentElement.classList.remove('dark');
+  }, []);
 
   // to save the token
   const persistAuth = (userObj, tokenStr, remember = false) => {
@@ -163,12 +172,12 @@ const App = () => {
   };
 
   const handleLogin = (userData, remember = false, tokenFromApi = null) => {
-    persistAuth(userData, remember, tokenFromApi);
+    persistAuth(userData, tokenFromApi, remember);
     navigate('/');
   };
 
   const handleSignup = (userData, remember = false, tokenFromApi = null) => {
-    persistAuth(userData, remember, tokenFromApi);
+    persistAuth(userData, tokenFromApi, remember);
     navigate('/');
   };
 
@@ -197,8 +206,18 @@ const App = () => {
   return (
     <>
       <ScrollToTop />
+      <ToastContainer
+        position="top-right"
+        autoClose={2500}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <Routes>
-        <Route path="/login" element={<Login onLogout={handleLogin} />} />
+        <Route path="/login" element={<Login onLogin={handleLogin} />} />
         <Route path="/signup" element={<Signup onSignUp={handleSignup} />} />
 
         <Route
@@ -251,7 +270,23 @@ const App = () => {
               />
             }
           />
+
+          <Route
+            path="/profile"
+            element={
+              <Profile
+                user={user}
+                onUpdateProfile={updateUserData}
+                onLogout={handleLogout}
+              />
+            }
+          />
         </Route>
+
+        <Route
+          path="*"
+          element={<Navigate to={user ? '/' : '/login'} replace />}
+        />
       </Routes>
     </>
   );

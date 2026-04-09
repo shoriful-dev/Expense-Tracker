@@ -5,6 +5,8 @@ import Sidebar from './Sidebar';
 import { Utensils, Home, Car, ShoppingCart, Gift, Zap, Activity, ArrowUp, CreditCard, PiggyBank, DollarSign, ArrowDown, TrendingUp, Clock, RefreshCcw, RefreshCw, Info, ChevronUp, ChevronDown, PieChart } from 'lucide-react';
 import axios from 'axios';
 import { Outlet } from 'react-router-dom';
+import { formatBDT } from '../utils/currency';
+import { usePreferences } from '../context/PreferencesContext.jsx';
 
 const API_BASE = 'http://localhost:8000/api';
 
@@ -54,6 +56,7 @@ const safeArrayFromResponse = res => {
 };
 
 const Layout = ({ onLogout, user }) => {
+  const { prefs } = usePreferences();
   const [transactions, setTransactions] = useState([]);
   const [timeFrame, setTimeFrame] = useState('monthly');
   const [loading, setLoading] = useState(false);
@@ -65,7 +68,9 @@ const Layout = ({ onLogout, user }) => {
   const fetchTransactions = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
+      const token =
+        localStorage.getItem('token') || sessionStorage.getItem('token');
+      const sessionToken = sessionStorage.getItem('token');
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
       const [incomeRes, expenseRes] = await Promise.all([
@@ -109,10 +114,13 @@ const Layout = ({ onLogout, user }) => {
   // to add a new transaction either income or expense
   const addTransaction = async transaction => {
     try {
-      const token = localStorage.getItem('token');
+      const token =
+        localStorage.getItem('token') || sessionStorage.getItem('token');
+      const sessionToken = sessionStorage.getItem('token');
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
       const endpoint =
         transaction.type === 'income' ? 'income/add' : 'expense/add';
+
       await axios.post(`${API_BASE}/${endpoint}`, transaction, { headers });
       await fetchTransactions();
       return true;
@@ -127,7 +135,8 @@ const Layout = ({ onLogout, user }) => {
 
   const editTransaction = async (id, transaction) => {
     try {
-      const token = localStorage.getItem('token');
+      const token =
+        localStorage.getItem('token') || sessionStorage.getItem('token');
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
       const endpoint =
         transaction.type === 'income' ? 'income/update' : 'expense/update';
@@ -147,7 +156,8 @@ const Layout = ({ onLogout, user }) => {
 
   const deleteTransaction = async (id, type) => {
     try {
-      const token = localStorage.getItem('token');
+      const token =
+        localStorage.getItem('token') || sessionStorage.getItem('token');
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
       const endpoint = type === 'income' ? 'income/delete' : 'expense/delete';
       await axios.delete(`${API_BASE}/${endpoint}/${id}`, { headers });
@@ -304,9 +314,10 @@ const Layout = ({ onLogout, user }) => {
               <div>
                 <p className={styles.statCards.cardTitle}>Total Balance</p>
                 <p className={styles.statCards.cardValue}>
-                  $
-                  {stats.allTimeSavings.toLocaleString('en-US', {
+                  {formatBDT(stats.allTimeSavings, {
+                    digits: prefs.digits,
                     maximumFractionDigits: 2,
+                    minimumFractionDigits: 2,
                   })}
                 </p>
               </div>
@@ -317,7 +328,10 @@ const Layout = ({ onLogout, user }) => {
             </div>
             <p className={styles.statCards.cardFooter}>
               <span className="text-teal-600 font-medium">
-                +${stats.last30DaysSavings.toLocaleString()}
+                +{formatBDT(stats.last30DaysSavings, {
+                  digits: prefs.digits,
+                  maximumFractionDigits: 0,
+                })}
               </span>{' '}
               this month
             </p>
@@ -328,9 +342,10 @@ const Layout = ({ onLogout, user }) => {
               <div>
                 <p className={styles.statCards.cardTitle}>Monthly Income</p>
                 <p className={styles.statCards.cardValue}>
-                  $
-                  {stats.last30DaysIncome.toLocaleString('en-US', {
+                  {formatBDT(stats.last30DaysIncome, {
+                    digits: prefs.digits,
                     maximumFractionDigits: 2,
+                    minimumFractionDigits: 2,
                   })}
                 </p>
               </div>
@@ -350,9 +365,10 @@ const Layout = ({ onLogout, user }) => {
               <div>
                 <p className={styles.statCards.cardTitle}>Monthly Expense</p>
                 <p className={styles.statCards.cardValue}>
-                  $
-                  {stats.last30DaysExpenses.toLocaleString('en-US', {
+                  {formatBDT(stats.last30DaysExpenses, {
+                    digits: prefs.digits,
                     maximumFractionDigits: 2,
+                    minimumFractionDigits: 2,
                   })}
                 </p>
               </div>
@@ -465,7 +481,11 @@ const Layout = ({ onLogout, user }) => {
                       </div>
 
                       <span className={styles.colors.transaction.text(type)}>
-                        {type === 'income' ? '+' : '-'}${Number(amount)}
+                        {type === 'income' ? '+' : '-'}
+                        {formatBDT(Math.abs(Number(amount)), {
+                          maximumFractionDigits: 2,
+                          minimumFractionDigits: 2,
+                        })}
                       </span>
                     </div>
                   );
@@ -531,7 +551,10 @@ const Layout = ({ onLogout, user }) => {
                       </span>
                     </div>
                     <span className={styles.categories.categoryAmount}>
-                      ${amount}
+                      {formatBDT(amount, {
+                        digits: prefs.digits,
+                        maximumFractionDigits: 0,
+                      })}
                     </span>
                   </div>
                 ))}
@@ -544,7 +567,10 @@ const Layout = ({ onLogout, user }) => {
                       Total Income
                     </p>
                     <p className={styles.categories.summaryValue}>
-                      ${stats.allTimeIncome.toLocaleString()}
+                      {formatBDT(stats.allTimeIncome, {
+                        digits: prefs.digits,
+                        maximumFractionDigits: 0,
+                      })}
                     </p>
                   </div>
 
@@ -553,7 +579,10 @@ const Layout = ({ onLogout, user }) => {
                       Total Expense
                     </p>
                     <p className={styles.categories.summaryValue}>
-                      ${stats.allTimeExpenses.toLocaleString()}
+                      {formatBDT(stats.allTimeExpenses, {
+                        digits: prefs.digits,
+                        maximumFractionDigits: 0,
+                      })}
                     </p>
                   </div>
                 </div>

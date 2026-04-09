@@ -28,8 +28,11 @@ import AddTransactionModal from '../components/Add';
 import { getTimeFrameRange, generateChartPoints } from '../components/Helpers';
 import { CATEGORY_ICONS } from '../assets/color';
 import { expensePageStyles as styles } from '../assets/dummyStyles';
+import { formatBDT } from '../utils/currency';
+import { toast } from 'react-toastify';
+import { usePreferences } from '../context/PreferencesContext.jsx';
 
-const API_BASE = 'http://localhost:4000/api';
+const API_BASE = 'http://localhost:8000/api';
 
 /**
  * Helper: convert date (or datetime) to ISO by attaching client current time
@@ -60,6 +63,7 @@ function toIsoWithClientTime(dateValue) {
 }
 
 const Expense = () => {
+  const { prefs } = usePreferences();
   // Get data from outlet context including refreshTransactions
   const {
     transactions: outletTransactions = [],
@@ -97,7 +101,8 @@ const Expense = () => {
 
   // Auth headers helper
   const getAuthHeaders = useCallback(() => {
-    const token = localStorage.getItem('token');
+    const token =
+      localStorage.getItem('token') || sessionStorage.getItem('token');
     return token ? { Authorization: `Bearer ${token}` } : {};
   }, []);
 
@@ -276,7 +281,7 @@ const Expense = () => {
     } catch (err) {
       console.error(`${method} request error:`, err);
       const serverMsg = err?.response?.data?.message;
-      alert(
+      toast.error(
         serverMsg ||
           `Server error while ${method === 'post' ? 'adding' : method === 'put' ? 'updating' : 'deleting'} expense.`,
       );
@@ -299,7 +304,9 @@ const Expense = () => {
         date: toIsoWithClientTime(newTransaction.date),
       };
 
-      await handleApiRequest('post', '/expense/add', payload);
+      const res = await handleApiRequest('post', '/expense/add', payload);
+      const createdId =
+        res?.data?.expense?._id || res?.data?.expense?.id || null;
 
       // If added date is outside the current visible range, switch view to that month
       const addedDate = new Date(payload.date || newTransaction.date);
@@ -321,6 +328,28 @@ const Expense = () => {
         category: 'Food',
       });
       setShowModal(false);
+
+      const toastId = toast.success(
+        <div className="flex items-center justify-between gap-3">
+          <span>Expense added.</span>
+          {createdId && (
+            <button
+              className="px-2 py-1 rounded-md bg-red-50 text-red-700 border border-red-200"
+              onClick={async () => {
+                try {
+                  await handleApiRequest('delete', `/expense/delete/${createdId}`);
+                  toast.dismiss(toastId);
+                  toast.info('Expense removed.');
+                } catch (_) {
+                  // handleApiRequest already toasts
+                }
+              }}
+            >
+              Undo
+            </button>
+          )}
+        </div>,
+      );
     } catch (err) {
       console.warn(err);
     }
@@ -439,7 +468,7 @@ const Expense = () => {
             </div>
           }
           label="Total Expenses"
-          value={`$${totalExpense.toLocaleString()}`}
+          value={formatBDT(totalExpense, { digits: prefs.digits, maximumFractionDigits: 0 })}
           additionalContent={
             <div className="mt-2 text-xs text-gray-500 flex items-center">
               <Calendar className="w-3 h-3 mr-1" /> {timeFrameRange.label}
@@ -455,7 +484,7 @@ const Expense = () => {
             </div>
           }
           label="Average Expense"
-          value={`$${averageExpense.toLocaleString()}`}
+          value={formatBDT(averageExpense, { digits: prefs.digits, maximumFractionDigits: 0 })}
           additionalContent={
             <div className="mt-2 text-xs text-gray-500 flex items-center">
               <Calendar className="w-3 h-3 mr-1" />{' '}
@@ -538,11 +567,13 @@ const Expense = () => {
                 tickLine={false}
                 tick={{ fill: '#6b7280', fontSize: 12 }}
                 width={60}
-                tickFormatter={value => `$${value.toLocaleString()}`}
+                tickFormatter={value =>
+                  formatBDT(value, { digits: prefs.digits, maximumFractionDigits: 0 })
+                }
               />
               <Tooltip
                 formatter={value => [
-                  `$${Math.round(value).toLocaleString()}`,
+                  formatBDT(Math.round(value), { digits: prefs.digits, maximumFractionDigits: 0 }),
                   'Expense',
                 ]}
                 contentStyle={styles.tooltipContent}
@@ -624,6 +655,16 @@ const Expense = () => {
                 onCancel={() => setEditingId(null)}
                 onDelete={handleDeleteTransaction}
                 type="expense"
+                categories={[
+                  'Food',
+                  'Housing',
+                  'Transport',
+                  'Shopping',
+                  'Entertainment',
+                  'Utilities',
+                  'Healthcare',
+                  'Other',
+                ]}
                 categoryIcons={CATEGORY_ICONS}
                 setEditingId={setEditingId}
                 containerClass={styles.transactionItemContainer}

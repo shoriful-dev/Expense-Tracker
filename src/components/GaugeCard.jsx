@@ -5,6 +5,8 @@ import {
   RadialBar,
   PolarAngleAxis,
 } from 'recharts';
+import { formatBDT } from '../utils/currency';
+import { usePreferences } from '../context/PreferencesContext.jsx';
 
 const GaugeCard = ({
   gauge = {},
@@ -12,6 +14,7 @@ const GaugeCard = ({
   timeFrameLabel = '',
   highlightNegative = false,
 }) => {
+  const { prefs } = usePreferences();
   const { name = 'Metric', value = 0, max = 100 } = gauge;
   const isNegative = value < 0;
   const absValue = Math.abs(value);
@@ -69,7 +72,11 @@ const GaugeCard = ({
               dominantBaseline="middle"
               className={`text-2xl font-bold ${textColor}`}
             >
-              {isNegative ? '-' : ''}${Math.round(absValue).toLocaleString()}
+              {(isNegative ? '-' : '') +
+                formatBDT(Math.round(absValue), {
+                  digits: prefs.digits,
+                  maximumFractionDigits: 0,
+                })}
             </text>
             <text
               x="50%"
