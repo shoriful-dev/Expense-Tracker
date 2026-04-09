@@ -34,8 +34,9 @@ import { formatBDT } from '../utils/currency';
 import { toast } from 'react-toastify';
 import { usePreferences } from '../context/PreferencesContext.jsx';
 import { formatDate } from '../utils/date.js';
+import { API_BASE } from '../utils/api';
 
-const API_BASE = 'http://localhost:8000/api';
+
 
 function toIsoWithClientTime(dateValue) {
   if (!dateValue) {

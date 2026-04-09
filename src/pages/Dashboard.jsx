@@ -48,8 +48,9 @@ import { formatBDT } from '../utils/currency';
 import { toast } from 'react-toastify';
 import TransactionItem from '../components/TransactionItem';
 import { usePreferences } from '../context/PreferencesContext.jsx';
+import { API_BASE } from '../utils/api';
 
-const API_BASE = 'http://localhost:8000/api';
+
 
 const getAuthHeader = () => {
   const token =

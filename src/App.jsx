@@ -11,6 +11,7 @@ import Dashboard from './pages/Dashboard';
 import Login from './components/Login';
 import Signup from './components/SignUp';
 import axios from 'axios';
+import { API_URL } from './utils/api';
 import Income from './pages/Income';
 import Expense from './pages/Expense';
 import Profile from './pages/Profile';
@@ -18,7 +19,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { usePreferences } from './context/PreferencesContext.jsx';
 
-const API_URL = 'http://localhost:8000';
+
 
 // to get transactions from localstorage
 const getTransactionsFromStorage = () => {

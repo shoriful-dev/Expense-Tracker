@@ -8,8 +8,9 @@ import { Outlet } from 'react-router-dom';
 import { formatBDT } from '../utils/currency';
 import { usePreferences } from '../context/PreferencesContext.jsx';
 import { formatDate } from '../utils/date.js';
+import { API_BASE } from '../utils/api';
 
-const API_BASE = 'http://localhost:8000/api';
+
 
 const CATEGORY_ICONS = {
   Food: <Utensils className="w-4 h-4" />,

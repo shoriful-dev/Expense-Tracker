@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { signupStyles } from '../assets/dummyStyles';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { API_URL } from '../utils/api';
 import { ArrowLeft, Eye, EyeOff, Lock, Mail, User } from 'lucide-react';
 
-const Signup = ({ API_URL = 'http://localhost:8000', onSignup }) => {
+const Signup = ({ API_URL: propApiUrl, onSignup }) => {
+  const finalApiUrl = propApiUrl || API_URL;
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -17,7 +19,7 @@ const Signup = ({ API_URL = 'http://localhost:8000', onSignup }) => {
   // to fetch profile
   const fetchProfile = async token => {
     if (!token) return null;
-    const res = await axios.get(`${API_URL}/api/user/me`, {
+    const res = await axios.get(`${finalApiUrl}/api/user/me`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -65,7 +67,7 @@ const Signup = ({ API_URL = 'http://localhost:8000', onSignup }) => {
     setIsLoading(true);
     try {
       const res = await axios.post(
-        `${API_URL}/api/user/register`,
+        `${finalApiUrl}/api/user/register`,
         { name, email, password },
         { headers: { 'Content-Type': 'application/json' } },
       );

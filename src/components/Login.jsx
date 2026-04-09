@@ -3,8 +3,10 @@ import { loginStyles } from '../assets/dummyStyles';
 import { EyeOff, Eye, Lock, Mail, User } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { API_URL } from '../utils/api';
 
-const Login = ({ onLogin, API_URL = 'http://localhost:8000' }) => {
+const Login = ({ onLogin, API_URL: propApiUrl }) => {
+  const finalApiUrl = propApiUrl || API_URL;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -16,7 +18,7 @@ const Login = ({ onLogin, API_URL = 'http://localhost:8000' }) => {
   // to fetch profile
   const fetchProfile = async token => {
     if (!token) return null;
-    const res = await axios.get(`${API_URL}/api/user/me`, {
+    const res = await axios.get(`${finalApiUrl}/api/user/me`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -42,7 +44,7 @@ const Login = ({ onLogin, API_URL = 'http://localhost:8000' }) => {
 
     try {
       const res = await axios.post(
-        `${API_URL}/api/user/login`,
+        `${finalApiUrl}/api/user/login`,
         {
           email,
           password,
