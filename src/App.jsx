@@ -9,7 +9,7 @@ import {
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
 import Login from './components/Login';
-import Signup from './components/SignUp';
+import Signup from './components/Signup';
 import axios from 'axios';
 import { API_URL } from './utils/api';
 import Income from './pages/Income';
